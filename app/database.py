@@ -17,12 +17,13 @@ def init_db():
 # Criação da tabela Clientes:
     cur.execute("""
         CREATE TABLE IF NOT EXISTS clientes (
-            id      INTERGER    PRIMARY KEY AUTOINCREMENT,
-            nome    TEXT        NOT NULL,
-            cpf     TEXT        NOT NULL UNIQUE,
-            senha   TEXT        NOT NULL,
-            pontos   INTEGER    NOT NULL DEFAULT 0,
-            criado_em TEXT      NOT NULL DEFAULT (datetime('now'))
+            id          INTERGER    PRIMARY KEY AUTOINCREMENT,
+            nome        TEXT        NOT NULL,
+            cpf         TEXT        NOT NULL UNIQUE,
+            senha       TEXT        NOT NULL,
+            pontos      INTEGER    NOT NULL DEFAULT 0,
+            consentimento   INTEGER     NOT NULL DEFAULT 0,
+            criado_em   TEXT      NOT NULL DEFAULT (datetime('now'))
         )
     """)
 
@@ -88,6 +89,19 @@ def init_db():
         )
     """)
 
+# Criação da tabela Auditoria:
+    cur.execute("""
+            CREATE TABLE IF NOT EXISTS audit_log (
+                id      INTEGER     PRIMARY KEY AUTOINCREMENT,
+                acao    TEXT        NOT NULL,
+                entidade    TEXT    NOT NULL,
+                entidade_id INTEGER NOT NULL,
+                cliente_id  INTEGER NOT NULL,
+                detalhes    TEXT,
+                criado_em   TEXT    NOT NULL DEFAULT(datetime('now')),
+                )
+            """)
+
 # Seed inicial:
     _seed(cur)
 
@@ -97,6 +111,8 @@ def init_db():
 
 def _seed(cur):
     """ Insere dados iniciais caso as tabelas estejam vazias."""
+    
+#Populando o banco de dados:
 
     # Estoque:
     estoque_seed = [
