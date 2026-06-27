@@ -38,10 +38,9 @@ No terminal: python run.py ou selecionando o arquivo run.py e executando.
 
 -Base URL: http://localhost:5000
 -Formato: JSON
--Autenticação no POSTMAN: 
-*Auth type: JWT Bearer (POST/clientes/login)
-Copia o token e com o botão direito 'Set a variable' cria a variável token
+
 *Auth type: Bearer Token (GET/clientes/perfil)
+O token é obtido em `POST /clientes/login` e tem validade de **8 horas** (28800 segundos).
 Troca o token gigantesco por {{token}} que será refenciado o token copiado no POST/clientes/login
 
 4 - Documentação da API:
@@ -49,13 +48,31 @@ Cada endpoint pode ser consultado com a API rodando com '/apidocs' .
 
 5- Fluxo do Postman:
 
-1 - POST/clientes/cadastro  - Cria conta
-2 - POST/clientes/login     - Obter token JWT
-3 - GET/cardapio?unidade=MATRIZ - Ver cardápio disponível
-4 - POST/pedidos            - Criar pedido (usar token)
-5 - POST/pagamentos         - Pagar pedido (usar token)
-6 - GET/clientes/perfil     - Ver pontos acumulados
-7 - GET/clientes/ranking    - Ver ranking de fidelidade
+5.1 - POST/clientes/cadastro  - Cria conta
+- No body, seleciona raw e o formato JSON:
+{
+    "nome" : "Felipe",
+    "cpf" : "12345678912",
+    "senha": "12345",
+    "consentimento": true
+}
+
+5.2 - POST/clientes/login     - Obter token JWT
+- No body, seleciona raw e o formato JSON:
+{
+    "cpf": "12345678912",
+    "senha": "12345"
+}
+
+Gerará um token, basta selecionar o token e com o botão direito 'Set a variable' cria a variável token.
+Utiliza a variável {{token}} como autenticação tipo 'Bearer Token' em todas as rotas necessárias.
+
+5.3 - GET/clientes/perfil
+5.3 - GET/cardapio?unidade=MATRIZ - Ver cardápio disponível
+5.4 - POST/pedidos            - Criar pedido (usar token)
+5.5 - POST/pagamentos         - Pagar pedido (usar token)
+5.6 - GET/clientes/perfil     - Ver pontos acumulados
+5.7 - GET/clientes/ranking    - Ver ranking de fidelidade
 
 6 - Códigos de status utilizados:
     Status - Significado
@@ -69,3 +86,29 @@ Cada endpoint pode ser consultado com a API rodando com '/apidocs' .
     405 -   Método não permitido
     409 -   Conflito
     422 -   Erro de validação de campos
+
+7 - Tabela-Resumo de Todos os Endpoints
+
+| # | Recurso | Método | Rota | Auth |
+
+| 1 | Clientes | POST | /clientes/cadastro | Pública |
+| 2 | Clientes | POST | /clientes/login | Pública |
+| 3 | Clientes | GET | /clientes/perfil | JWT |
+| 4 | Cardápio | GET | /cardapio | Pública |
+| 5 | Cardápio | GET | /cardapio/{id} | Pública |
+| 6 | Cardápio | POST | /cardapio | JWT |
+| 7 | Cardápio | PUT | /cardapio/{id} | JWT |
+| 8 | Cardápio | DELETE | /cardapio/{id} | JWT |
+| 9 | Estoque | GET | /estoque | JWT |
+| 10 | Estoque | POST | /estoque | JWT |
+| 11 | Estoque | POST | /estoque/transferir | JWT |
+| 12 | Estoque | PUT | /estoque/{id} | JWT |
+| 13 | Pedidos | POST | /pedidos | JWT |
+| 14 | Pedidos | GET | /pedidos (com filtro canalPedido) | JWT |
+| 15 | Pedidos | GET | /pedidos/{id} | JWT |
+| 16 | Pedidos | PATCH | /pedidos/{id}/status | JWT |
+| 17 | Pagamentos | POST | /pagamentos | JWT |
+| 18 | Pagamentos | GET | /pagamentos/{pedidoId} | JWT |
+| 19 | Fidelidade | GET | /clientes/fidelidade | JWT |
+| 20 | Fidelidade | GET | /clientes/ranking | Pública |
+| 21 | Auditoria | GET | /auditoria | JWT |

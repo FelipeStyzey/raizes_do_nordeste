@@ -10,14 +10,14 @@ def get_connection():
     return conn
 
 def init_db():
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    os.makedirs(os.path.dirname(DB_path), exist_ok=True)
     conn = get_connection()
-    cur = conn.cursos()
+    cur = conn.cursor()
 
 # Criação da tabela Clientes:
     cur.execute("""
         CREATE TABLE IF NOT EXISTS clientes (
-            id          INTERGER    PRIMARY KEY AUTOINCREMENT,
+            id          INTEGER    PRIMARY KEY AUTOINCREMENT,
             nome        TEXT        NOT NULL,
             cpf         TEXT        NOT NULL UNIQUE,
             senha       TEXT        NOT NULL,
@@ -32,11 +32,13 @@ def init_db():
         CREATE TABLE IF NOT EXISTS pedidos (
             id              INTEGER     PRIMARY KEY AUTOINCREMENT,
             canal_pedido    TEXT        NOT NULL,
-            cliente_id      INTERGER    NOT NULL,
+            cliente_id      INTEGER    NOT NULL,
             unidade         TEXT        NOT NULL DEFAULT 'MATRIZ',
             status          TEXT        NOT NULL DEFAULT 'PENDENTE',
             total           REAL        NOT NULL DEFAULT 0.0,
+            forma_pagamento TEXT,
             criado_em       TEXT        NOT NULL DEFAULT(datetime('now')),
+            atualizado_em   TEXT        NOT NULL DEFAULT(datetime('now')),
             FOREIGN KEY (cliente_id) REFERENCES clientes(id)
         )
     """)
@@ -98,7 +100,7 @@ def init_db():
                 entidade_id INTEGER NOT NULL,
                 cliente_id  INTEGER NOT NULL,
                 detalhes    TEXT,
-                criado_em   TEXT    NOT NULL DEFAULT(datetime('now')),
+                criado_em   TEXT    NOT NULL DEFAULT(datetime('now'))
                 )
             """)
 
@@ -107,7 +109,7 @@ def init_db():
 
     conn.commit()
     conn.close()
-    print(f"[DB] Banco iniciado em: {DB_PATH}")
+    print(f"[DB] Banco iniciado em: {DB_path}")
 
 def _seed(cur):
     """ Insere dados iniciais caso as tabelas estejam vazias."""
