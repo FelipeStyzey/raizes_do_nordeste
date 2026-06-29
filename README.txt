@@ -14,10 +14,9 @@ gerenciador de estoque das unidades, cardápio e integração com pagamentos.
 
     *Link do projeto no github: https://github.com/FelipeStyzey/raizes_do_nordeste
 
+    Como executar o projeto(teste):
 
-    Como executar o projeto:
-
-1.1- Após baixar o projeto, executar no terminal da IDE a criação do .env :
+1.1- Após baixar o projeto, executar no terminal da IDE a criação do .env ((PowerShell)):
 python -m venv .venv
 
 1.2 - Se quiser ver se a pasta .venv foi criada corretamente:
@@ -29,26 +28,25 @@ Get-ChildItem .\.venv\Scripts\
 1.4 - Instalar as dependências:
 pip install -r requirements.txt
 
-2 - Executar o run.py
+1.5 - Executar o run.py
 No terminal: python run.py ou selecionando o arquivo run.py e executando.
 
-2.1 - O banco SQlite é criado automaticamente em instance/raizes.db na primeira execução do código.
+1.6 - O banco SQlite é criado automaticamente em instance/raizes.db na primeira execução do código.
 
-3 - Abre o POSTMAN:
+1.7 - Abre o POSTMAN:
 
 -Base URL: http://localhost:5000
 -Formato: JSON
 
 *Auth type: Bearer Token (GET/clientes/perfil)
 O token é obtido em `POST /clientes/login` e tem validade de **8 horas** (28800 segundos).
-Troca o token gigantesco por {{token}} que será refenciado o token copiado no POST/clientes/login
 
-4 - Documentação da API:
-Cada endpoint pode ser consultado com a API rodando com '/apidocs' .
+1.8 - Documentação da API:
+Cada endpoint pode ser consultado com a API rodando com o arquivo raizes_do_nordeste.postman_collection.json  .
 
-5- Fluxo do Postman:
+2 - Fluxo do Postman:
 
-5.1 - POST/clientes/cadastro  - Cria conta
+2.1 - POST/clientes/cadastro  - Cria conta
 - No body, seleciona raw e o formato JSON:
 {
     "nome" : "Felipe",
@@ -57,7 +55,7 @@ Cada endpoint pode ser consultado com a API rodando com '/apidocs' .
     "consentimento": true
 }
 
-5.2 - POST/clientes/login     - Obter token JWT
+2.2 - POST/clientes/login     - Obter token JWT
 - No body, seleciona raw e o formato JSON:
 {
     "cpf": "12345678912",
@@ -67,14 +65,98 @@ Cada endpoint pode ser consultado com a API rodando com '/apidocs' .
 Gerará um token, basta selecionar o token e com o botão direito 'Set a variable' cria a variável token.
 Utiliza a variável {{token}} como autenticação tipo 'Bearer Token' em todas as rotas necessárias.
 
-5.3 - GET/clientes/perfil
-5.3 - GET/cardapio?unidade=MATRIZ - Ver cardápio disponível
-5.4 - POST/pedidos            - Criar pedido (usar token)
-5.5 - POST/pagamentos         - Pagar pedido (usar token)
-5.6 - GET/clientes/perfil     - Ver pontos acumulados
-5.7 - GET/clientes/ranking    - Ver ranking de fidelidade
+2.3 - GET/clientes/perfil
+{
+    "cliente": {
+        "criado_em": "2026-06-28 21:58:30",
+        "id": 1,
+        "nome": "Felipe Silva",
+        "pontos": 60
+    }
+}
 
-6 - Códigos de status utilizados:
+2.4 - GET/cardapio?unidade=MATRIZ - Ver cardápio disponível
+{
+    "cardapio": [
+        {
+            "ativo": 1,
+            "descricao": "Carne de sol com macaxeira",
+            "id": 1,
+            "nome": "Prato 1",
+            "preco": 20.0,
+            "unidade": "MATRIZ"
+        },
+        {
+            "ativo": 1,
+            "descricao": "Especialidade da casa",
+            "id": 2,
+            "nome": "Prato 2",
+            "preco": 30.0,
+            "unidade": "MATRIZ"
+        },
+        {
+            "ativo": 1,
+            "descricao": "Frutos do mar",
+            "id": 3,
+            "nome": "Prato 3",
+            "preco": 50.0,
+            "unidade": "MATRIZ"
+        }
+    ],
+    "total": 3
+}
+
+2.5 - POST/pedidos            - Criar pedido (usar token)
+{
+  "canalPedido": "APP",
+  "unidade": "MATRIZ",
+  "itens": [
+    {
+      "pratoId": 1,
+      "quantidade": 1
+    }
+  ],
+  "formaPagamento": "DINHEIRO"
+}
+
+2.6 - POST/pagamentos         - Pagar pedido (usar token)
+{
+    "aprovado": true,
+    "message": "Pagamento do pedido aprovado.",
+    "pagamento": {
+        "id": 1,
+        "metodo": "DINHEIRO",
+        "pedido_id": 2,
+        "processado_em": "2026-06-28 23:45:17",
+        "status": "APROVADO"
+    },
+    "pedidoId": 2,
+    "total": 20.0
+}
+
+2.7 - GET/clientes/perfil     - Ver pontos acumulados
+{
+    "cliente": {
+        "criado_em": "2026-06-28 21:58:30",
+        "id": 1,
+        "nome": "Felipe Silva",
+        "pontos": 80
+    }
+}
+
+2.8 - GET/clientes/ranking    - Ver ranking de fidelidade
+{
+    "ranking": [
+        {
+            "id": 1,
+            "nome": "Felipe Silva",
+            "pontos": 80,
+            "posicao": 1
+        }
+    ]
+}
+
+3 - Códigos de status utilizados:
     Status - Significado
 
     200 -   OK
@@ -87,7 +169,7 @@ Utiliza a variável {{token}} como autenticação tipo 'Bearer Token' em todas a
     409 -   Conflito
     422 -   Erro de validação de campos
 
-7 - Tabela-Resumo de Todos os Endpoints
+4 - Tabela-Resumo de Todos os Endpoints
 
 | # | Recurso | Método | Rota | Auth |
 
